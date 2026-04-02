@@ -1,6 +1,5 @@
 'use client'
-// dealiq/frontend/app/dashboard/layout.js
-// Wraps all /dashboard/* pages with sidebar + topbar
+// frontend/app/dashboard/layout.js
 
 import { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
@@ -11,16 +10,16 @@ import Toast from '../../components/ui/Toast'
 
 const NAV = [
   { href: '/dashboard',              icon: '📊', label: 'Overview' },
-  { href: '/dashboard/deals',        icon: '🏠', label: 'Deal Rooms',   badge: 'deals' },
+  { href: '/dashboard/deals',        icon: '🏠', label: 'Deal Rooms' },
   { href: '/dashboard/team',         icon: '👥', label: 'Team' },
   { href: '/dashboard/content',      icon: '📁', label: 'Content' },
-  { href: '/dashboard/alerts',       icon: '🔔', label: 'Alerts',       badge: 'alerts', badgeColor: 'red' },
-  { href: '/dashboard/drafts',       icon: '🤖', label: 'AI Drafts',    badge: 'drafts', badgeColor: 'amber' },
+  { href: '/dashboard/alerts',       icon: '🔔', label: 'Alerts' },
+  { href: '/dashboard/drafts',       icon: '🤖', label: 'AI Drafts' },
   { href: '/dashboard/automation',   icon: '⚡', label: 'Automation' },
 ]
 
 const BOTTOM_NAV = [
-  { href: '/dashboard/settings',     icon: '⚙️', label: 'Settings' },
+  { href: '/dashboard/settings',         icon: '⚙️', label: 'Settings' },
   { href: '/dashboard/settings/billing', icon: '💳', label: 'Billing' },
 ]
 
@@ -31,7 +30,6 @@ export default function DashboardLayout({ children }) {
   const { sidebarOpen } = useUIStore()
   const { subscription } = useSubscription()
 
-  // Redirect if not authed
   useEffect(() => {
     if (!isAuthenticated) router.replace('/auth/login')
   }, [isAuthenticated])
@@ -49,8 +47,13 @@ export default function DashboardLayout({ children }) {
 
         {/* Logo */}
         <div className="h-[56px] flex items-center px-4 border-b border-[rgba(17,17,25,0.08)] gap-2.5 shrink-0">
-          <div className="w-7 h-7 rounded-[7px] bg-[#3d5afe] flex items-center justify-center text-white font-black text-xs shrink-0">D</div>
-          {sidebarOpen && <span className="font-extrabold text-[15px] tracking-tight whitespace-nowrap">DealIQ</span>}
+          <div className="w-7 h-7 rounded-[7px] bg-[#3d5afe] flex items-center justify-center text-white font-black text-xs shrink-0">B</div>
+          {sidebarOpen && (
+            <div>
+              <div className="font-extrabold text-[15px] tracking-tight whitespace-nowrap leading-none">btbVault</div>
+              <div className="text-[8px] text-[#b5b3c1] tracking-widest uppercase">Embrace Expansion</div>
+            </div>
+          )}
         </div>
 
         {/* Trial banner */}
@@ -124,7 +127,7 @@ export default function DashboardLayout({ children }) {
             <div className="text-sm text-[#8a8899]">
               <span className="font-semibold text-[#111119]">{org?.name}</span>
               {' '}<span className="text-[#b5b3c1]">·</span>{' '}
-              <span className="capitalize font-medium">{org?.plan} plan</span>
+              <span className="capitalize font-medium">{org?.plan} Plan</span>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -147,7 +150,7 @@ export default function DashboardLayout({ children }) {
         </main>
       </div>
 
-      {/* Toast notifications */}
+      {/* Toast */}
       <Toast />
     </div>
   )
