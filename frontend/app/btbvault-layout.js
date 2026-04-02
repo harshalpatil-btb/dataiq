@@ -1,6 +1,4 @@
-// dealiq/frontend/app/layout.js
-// Root layout — wraps all pages
-
+// frontend/app/layout.js
 import { Sora } from 'next/font/google'
 import './globals.css'
 
@@ -11,9 +9,9 @@ const sora = Sora({
 })
 
 export const metadata = {
-  title: { default: 'DealIQ', template: '%s — DealIQ' },
-  description: 'AI deal workspace for B2B sales teams. Track buyers, automate follow-ups, close faster.',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://dealiq.io'),
+  title: { default: 'btbVault', template: '%s — btbVault' },
+  description: 'btbVault — Embrace Expansion. AI deal workspace for B2B sales teams. Track buyers, automate follow-ups, close faster.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://dealiq-btb.vercel.app'),
 }
 
 export default function RootLayout({ children }) {
