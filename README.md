@@ -1,3 +1,4 @@
+
 # DealIQ — Complete MVP
 
 > **No terminal needed.** Every step below is point-and-click.
