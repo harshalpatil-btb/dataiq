@@ -35,7 +35,7 @@ export default function SignupPage() {
     try {
       const data = await auth.signup(form)
       setAuth(data)
-      router.push('/onboarding')
+      router.push('/dashboard')
     } catch (err) {
       setError(err.message || 'Signup failed. Please try again.')
     } finally {
