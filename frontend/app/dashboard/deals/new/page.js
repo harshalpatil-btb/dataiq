@@ -1,8 +1,8 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { deals } from '../../../lib/api'
-import { useUIStore } from '../../../lib/store'
+import { deals } from '../../../../lib/api'
+import { useUIStore } from '../../../../lib/store'
 
 export default function NewDealPage() {
   const router = useRouter()
