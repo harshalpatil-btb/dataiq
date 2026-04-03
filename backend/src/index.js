@@ -1,11 +1,9 @@
 // dealiq/backend/src/index.js
-// Main server entry point
-
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
-import jwt from '@fastify/jwt'
 import rateLimit from '@fastify/rate-limit'
 import 'dotenv/config'
+import { supabase } from './lib/clients.js'
 
 // Routes
 import authRoutes from './routes/auth.js'
@@ -29,17 +27,12 @@ const app = Fastify({
 })
 
 // ── PLUGINS ──────────────────────────────────────────────
-
 await app.register(cors, {
   origin: [
     process.env.FRONTEND_URL,
     'http://localhost:3000',
   ],
   credentials: true,
-})
-
-await app.register(jwt, {
-  secret: process.env.JWT_SECRET,
 })
 
 await app.register(rateLimit, {
@@ -54,22 +47,33 @@ await app.register(rateLimit, {
 })
 
 // ── AUTH DECORATOR ────────────────────────────────────────
-
-// Verify JWT on protected routes
+// Verify Supabase JWT on protected routes
 app.decorate('authenticate', async (request, reply) => {
   try {
-    await request.jwtVerify()
+    const authHeader = request.headers.authorization
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return reply.status(401).send({ error: 'Unauthorized', message: 'No token provided.' })
+    }
+
+    const token = authHeader.split(' ')[1]
+
+    // Verify with Supabase
+    const { data: { user }, error } = await supabase.auth.getUser(token)
+
+    if (error || !user) {
+      return reply.status(401).send({ error: 'Unauthorized', message: 'Invalid or expired token.' })
+    }
+
+    // Attach user to request
+    request.user = { sub: user.id, email: user.email }
   } catch (err) {
     reply.status(401).send({ error: 'Unauthorized', message: 'Invalid or expired token.' })
   }
 })
 
 // ── ROUTES ────────────────────────────────────────────────
-
-// Health check
 app.get('/health', async () => ({ status: 'ok', version: '1.0.0', ts: new Date().toISOString() }))
 
-// API routes
 app.register(authRoutes,       { prefix: '/auth' })
 app.register(dealRoutes,       { prefix: '/deals' })
 app.register(roomRoutes,       { prefix: '/rooms' })
@@ -79,18 +83,14 @@ app.register(teamRoutes,       { prefix: '/team' })
 app.register(contentRoutes,    { prefix: '/content' })
 app.register(automationRoutes, { prefix: '/automation' })
 app.register(aiRoutes,         { prefix: '/ai' })
-
-// Webhooks — raw body needed for Stripe signature verification
-app.register(webhookRoutes, { prefix: '/webhooks' })
+app.register(webhookRoutes,    { prefix: '/webhooks' })
 
 // ── START ─────────────────────────────────────────────────
-
 const PORT = parseInt(process.env.PORT || '8080')
 const HOST = '0.0.0.0'
-
 try {
   await app.listen({ port: PORT, host: HOST })
-  console.log(`🚀 DealIQ API running on ${HOST}:${PORT}`)
+  console.log(`🚀 btbVault API running on ${HOST}:${PORT}`)
 } catch (err) {
   app.log.error(err)
   process.exit(1)
